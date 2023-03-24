@@ -1,10 +1,20 @@
+package model;
+
 import java.util.HashMap;
 
 public class EpicTask extends Task {
-    HashMap<Integer, SubTask> subTasks = new HashMap<>();
+    private HashMap<Integer, SubTask> subTasks = new HashMap<>();
 
     public EpicTask(String name, String description) {
         super(name, description);
+    }
+
+    public HashMap<Integer, SubTask> getSubTasks() {
+        return subTasks;
+    }
+
+    public void setSubTasks(HashMap<Integer, SubTask> subTasks) {
+        this.subTasks = subTasks;
     }
 
     @Override

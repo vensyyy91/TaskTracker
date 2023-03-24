@@ -1,3 +1,6 @@
+import model.*;
+import service.*;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -31,11 +34,10 @@ public class Main {
         System.out.println(manager.getSubTaskList());
         System.out.println("----------------------------------------");
 
-        System.out.println("Получение задачи, подзадачи или эпика по идентификаторам 1, 3, 5, 19:");
+        System.out.println("Получение задачи, подзадачи или эпика по идентификаторам 1, 3, 5:");
         System.out.println(manager.getTaskById(1));
-        System.out.println(manager.getTaskById(3));
-        System.out.println(manager.getTaskById(5));
-        System.out.println(manager.getTaskById(19));
+        System.out.println(manager.getEpicTaskById(3));
+        System.out.println(manager.getSubTaskById(5));
         System.out.println("----------------------------------------");
 
         shopping.setStatus("IN_PROGRESS");
@@ -44,8 +46,6 @@ public class Main {
         manager.updateEpicTask(studying);
         studying1.setStatus("IN_PROGRESS");
         manager.updateSubTask(studying1);
-        studying2.setStatus("DONE");
-        manager.updateSubTask(studying2);
         coding1.setStatus("DONE");
         manager.updateSubTask(coding1);
 
@@ -55,18 +55,21 @@ public class Main {
         System.out.println(manager.getSubTaskList());
         System.out.println("----------------------------------------");
 
+        System.out.println("Список всех подзадач эпика с идентификатором 3:");
+        System.out.println(manager.getEpicSubTasks(3));
+        System.out.println("----------------------------------------");
+
         manager.removeTaskById(1);
-        manager.removeTaskById(6);
-        manager.removeTaskById(123);
+        System.out.println("Задача с идентификатором 1 удалена.");
+        manager.removeEpicTaskById(6);
+        System.out.println("Эпик с идентификатором 6 удален.");
+        manager.removeSubTaskById(4);
+        System.out.println("Подзадача с идентификатором 4 удалена.");
 
         System.out.println("Список после удаления отдельных заданий:");
         System.out.println(manager.getTaskList());
         System.out.println(manager.getEpicTaskList());
         System.out.println(manager.getSubTaskList());
-        System.out.println("----------------------------------------");
-
-        System.out.println("Список всех подзадач эпика с идентификатором 3:");
-        System.out.println(manager.getEpicSubTasks(3));
         System.out.println("----------------------------------------");
 
         manager.removeTasks();
