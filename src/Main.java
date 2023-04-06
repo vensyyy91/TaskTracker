@@ -1,10 +1,12 @@
 import model.*;
 import service.*;
+import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) {
-        Manager manager = new Manager();
+        TaskManager manager = Managers.getDefault();
+
         Task shopping = new Task("Сходить в магазин",
                 "Сходить в продуктовый магазин, купить хлеба, десяток яиц, палку колбасы, кусок сыра");
         Task film = new Task("Посмотреть фильмы",
@@ -34,19 +36,34 @@ public class Main {
         System.out.println(manager.getSubTaskList());
         System.out.println("----------------------------------------");
 
-        System.out.println("Получение задачи, подзадачи или эпика по идентификаторам 1, 3, 5:");
+        System.out.println("Получение задачи, подзадачи или эпика по идентификаторам:");
         System.out.println(manager.getTaskById(1));
         System.out.println(manager.getEpicTaskById(3));
         System.out.println(manager.getSubTaskById(5));
+        System.out.println(manager.getTaskById(1));
+        System.out.println(manager.getTaskById(2));
+        System.out.println(manager.getEpicTaskById(6));
+        System.out.println(manager.getSubTaskById(7));
+        System.out.println(manager.getSubTaskById(5));
+        System.out.println(manager.getSubTaskById(4));
+        System.out.println(manager.getTaskById(2));
+        System.out.println(manager.getEpicTaskById(3));
         System.out.println("----------------------------------------");
 
-        shopping.setStatus("IN_PROGRESS");
+        System.out.println("История просмотров:");
+        List<Task> taskHistory = manager.getHistory();
+        for (Task task : taskHistory) {
+            System.out.println(task);
+        }
+        System.out.println("----------------------------------------");
+
+        shopping.setStatus(TaskStatus.IN_PROGRESS);
         manager.updateTask(shopping);
         studying.setName("Сдать 3 финальное задание");
         manager.updateEpicTask(studying);
-        studying1.setStatus("IN_PROGRESS");
+        studying1.setStatus(TaskStatus.IN_PROGRESS);
         manager.updateSubTask(studying1);
-        coding1.setStatus("DONE");
+        coding1.setStatus(TaskStatus.DONE);
         manager.updateSubTask(coding1);
 
         System.out.println("Список после обновления:");

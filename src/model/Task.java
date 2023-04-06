@@ -5,7 +5,7 @@ import java.util.Objects;
 public class Task {
     protected String name;
     protected String description;
-    protected String status = "NEW";
+    protected TaskStatus status = TaskStatus.NEW;
     protected int id;
 
     public Task(String name, String description) {
@@ -29,11 +29,11 @@ public class Task {
         this.description = description;
     }
 
-    public String getStatus() {
+    public TaskStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(TaskStatus status) {
         this.status = status;
     }
 
