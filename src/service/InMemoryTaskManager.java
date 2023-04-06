@@ -8,7 +8,7 @@ import java.util.Optional;
 /**
  * Класс для объекта-менеджера, в котором реализовано управление всеми задачами
  */
-public class InMemoryTaskManager extends Managers implements TaskManager {
+public class InMemoryTaskManager implements TaskManager {
     /** Поле Задачи */
     private final HashMap<Integer, Task> tasks = new HashMap<>();
     /** Поле Эпики */
