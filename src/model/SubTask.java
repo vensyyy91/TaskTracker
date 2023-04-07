@@ -1,15 +1,18 @@
 package model;
 
 public class SubTask extends Task {
-    private EpicTask masterTask;
+    private int masterTaskId;
 
-    public SubTask(String name, String description, EpicTask masterTask) {
+    public SubTask(String name, String description) {
         super(name, description);
-        this.masterTask = masterTask;
     }
 
-    public EpicTask getMasterTask() {
-        return masterTask;
+    public int getMasterTaskId() {
+        return masterTaskId;
+    }
+
+    public void setMasterTaskId(int masterTaskId) {
+        this.masterTaskId = masterTaskId;
     }
 
     @Override
@@ -19,7 +22,7 @@ public class SubTask extends Task {
                 ", description='" + description + '\'' +
                 ", status='" + status + '\'' +
                 ", id=" + id +
-                ", masterTask=" + masterTask.getName() +
+                ", masterTaskId=" + masterTaskId +
                 '}';
     }
 }

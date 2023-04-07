@@ -1,7 +1,8 @@
 package service;
 
 import model.*;
-import java.util.HashMap;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,21 +11,21 @@ import java.util.List;
 public interface TaskManager {
     /**
      * Метод получения списка задач
-     * @return возвращает HashMap со списком задач, id в качестве ключа
+     * @return возвращает ArrayList со списком задач
      */
-    HashMap<Integer, Task> getTaskList();
+    ArrayList<Task> getTaskList();
 
     /**
      * Метод получения списка эпиков
-     * @return возвращает HashMap со списком эпиков, id в качестве ключа
+     * @return возвращает ArrayList со списком эпиков
      */
-    HashMap<Integer, EpicTask> getEpicTaskList();
+    ArrayList<EpicTask> getEpicTaskList();
 
     /**
-     * Метод получения списка эпиков
-     * @return возвращает HashMap со списком подзадач, id в качестве ключа
+     * Метод получения списка подзадач
+     * @return возвращает ArrayList со списком подзадач
      */
-    HashMap<Integer, SubTask> getSubTaskList();
+    ArrayList<SubTask> getSubTaskList();
 
     /**
      * Метод удаления всех задач
@@ -78,7 +79,7 @@ public interface TaskManager {
      * Метод создания подзадачи, также обновляет статус соответствующего эпика
      * @param subTask - подзачдача (объект класса SubTask)
      */
-    void createSubTask(SubTask subTask);
+    void createSubTask(SubTask subTask, int masterTaskId);
 
     /**
      * Метод обновления задачи
@@ -117,23 +118,11 @@ public interface TaskManager {
     void removeSubTaskById(int id);
 
     /**
-     * Метод получения списка всех подзадач конкретного жпика по идентификатору
+     * Метод получения списка всех подзадач конкретного эпика по идентификатору
      * @param id - идентификатор эпика
-     * @return возвращает HashMap со списком подзадач, id в качестве ключа
+     * @return возвращает список подзадач
      */
-    HashMap<Integer, SubTask> getEpicSubTasks(int id);
-
-    /**
-     * Метод обновления статуса эпика
-     * @param epicTask - эпик (объект класса EpicTask)
-     */
-    void checkEpicTaskStatus(EpicTask epicTask);
-
-    /**
-     * Метод получения уникального идентификатора
-      * @return возвращает уникальный идентификатор
-     */
-    int getNewId();
+    ArrayList<SubTask> getEpicSubTasks(int id);
 
     /**
      * Метод получения истории просмотров

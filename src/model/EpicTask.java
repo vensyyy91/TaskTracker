@@ -1,20 +1,21 @@
 package model;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EpicTask extends Task {
-    private HashMap<Integer, SubTask> subTasks = new HashMap<>();
+    private List<Integer> subTasksIdList = new ArrayList<>();
 
     public EpicTask(String name, String description) {
         super(name, description);
     }
 
-    public HashMap<Integer, SubTask> getSubTasks() {
-        return subTasks;
+    public List<Integer> getSubTasksIdList() {
+        return subTasksIdList;
     }
 
-    public void setSubTasks(HashMap<Integer, SubTask> subTasks) {
-        this.subTasks = subTasks;
+    public void setSubTasksIdList(List<Integer> subTasksIdList) {
+        this.subTasksIdList = subTasksIdList;
     }
 
     @Override

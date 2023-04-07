@@ -16,19 +16,19 @@ public class Main {
         EpicTask coding = new EpicTask("Codewars",
                 "Попрактиковаться в решении задач на codewars");
         SubTask studying1 = new SubTask("Дописать код",
-                "Дописать код в классах Manager и SubTask", studying);
+                "Дописать код в классах Manager и SubTask");
         SubTask studying2 = new SubTask("Сдать задание",
-                "Загрузить код на GitHub, отправить на проверку ревьюеру", studying);
+                "Загрузить код на GitHub, отправить на проверку ревьюеру");
         SubTask coding1 = new SubTask("5 kyu",
-                "Поднять уровень в Java до 5 kyu", coding);
+                "Поднять уровень в Java до 5 kyu");
 
         manager.createTask(shopping);
         manager.createTask(film);
         manager.createEpicTask(studying);
-        manager.createSubTask(studying1);
-        manager.createSubTask(studying2);
+        manager.createSubTask(studying1, 3);
+        manager.createSubTask(studying2, 3);
         manager.createEpicTask(coding);
-        manager.createSubTask(coding1);
+        manager.createSubTask(coding1, 6);
 
         System.out.println("Список всех задач, подзадач и эпиков:");
         System.out.println(manager.getTaskList());
