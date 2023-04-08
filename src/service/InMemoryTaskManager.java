@@ -7,9 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Класс для объекта-менеджера, в котором реализовано управление всеми задачами
- */
+/** Класс для объекта-менеджера, в котором реализовано управление всеми задачами */
 public class InMemoryTaskManager implements TaskManager {
     /** Поле Задачи */
     private final HashMap<Integer, Task> tasks = new HashMap<>();
@@ -123,21 +121,21 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void createTask(Task task) {
         task.setId(getNewId());
-        tasks.put(id, task);
+        tasks.put(task.getId(), task);
     }
 
     @Override
     public void createEpicTask(EpicTask epicTask) {
         epicTask.setId(getNewId());
-        epicTasks.put(id, epicTask);
+        epicTasks.put(epicTask.getId(), epicTask);
     }
 
     @Override
     public void createSubTask(SubTask subTask, int masterTaskId) {
         subTask.setId(getNewId());
-        subTasks.put(id, subTask);
+        subTasks.put(subTask.getId(), subTask);
         EpicTask masterTask = epicTasks.get(masterTaskId);
-        masterTask.getSubTasksIdList().add(id);
+        masterTask.getSubTasksIdList().add(subTask.getId());
         checkEpicTaskStatus(masterTask);
     }
 

@@ -2,6 +2,7 @@ package model;
 
 import java.util.Objects;
 
+/** Класс задачи */
 public class Task {
     protected String name;
     protected String description;

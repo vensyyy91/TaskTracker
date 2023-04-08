@@ -3,7 +3,9 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Класс эпика */
 public class EpicTask extends Task {
+    /** Поле Список идентификаторов подзадач, принадлежащих эпику */
     private List<Integer> subTasksIdList = new ArrayList<>();
 
     public EpicTask(String name, String description) {

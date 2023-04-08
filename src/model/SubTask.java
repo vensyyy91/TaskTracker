@@ -1,6 +1,8 @@
 package model;
 
+/** Класс подзадачи */
 public class SubTask extends Task {
+    /** Поле Идентификатор эпика, которому принадлежит подзадача */
     private int masterTaskId;
 
     public SubTask(String name, String description) {
