@@ -133,6 +133,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void createSubTask(SubTask subTask, int masterTaskId) {
         subTask.setId(getNewId());
+        subTask.setMasterTaskId(masterTaskId);
         subTasks.put(subTask.getId(), subTask);
         EpicTask masterTask = epicTasks.get(masterTaskId);
         masterTask.getSubTasksIdList().add(subTask.getId());
