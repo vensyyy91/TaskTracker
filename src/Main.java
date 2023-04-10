@@ -9,26 +9,25 @@ public class Main {
 
         Task shopping = new Task("Сходить в магазин",
                 "Сходить в продуктовый магазин, купить хлеба, десяток яиц, палку колбасы, кусок сыра");
+        manager.createTask(shopping);
         Task film = new Task("Посмотреть фильмы",
                 "Посмотреть фильмы, которые находятся в закладках браузера");
+        manager.createTask(film);
         EpicTask studying = new EpicTask("Сдать 3 ТЗ",
                 "Доделать и сдать финальное задание 3 спринта");
+        manager.createEpicTask(studying);
+        SubTask studying1 = new SubTask("Дописать код",
+                "Дописать код в классах Manager и SubTask", studying);
+        manager.createSubTask(studying1);
+        SubTask studying2 = new SubTask("Сдать задание",
+                "Загрузить код на GitHub, отправить на проверку ревьюеру", studying);
+        manager.createSubTask(studying2);
         EpicTask coding = new EpicTask("Codewars",
                 "Попрактиковаться в решении задач на codewars");
-        SubTask studying1 = new SubTask("Дописать код",
-                "Дописать код в классах Manager и SubTask");
-        SubTask studying2 = new SubTask("Сдать задание",
-                "Загрузить код на GitHub, отправить на проверку ревьюеру");
-        SubTask coding1 = new SubTask("5 kyu",
-                "Поднять уровень в Java до 5 kyu");
-
-        manager.createTask(shopping);
-        manager.createTask(film);
-        manager.createEpicTask(studying);
-        manager.createSubTask(studying1, 3);
-        manager.createSubTask(studying2, 3);
         manager.createEpicTask(coding);
-        manager.createSubTask(coding1, 6);
+        SubTask coding1 = new SubTask("5 kyu",
+                "Поднять уровень в Java до 5 kyu", coding);
+        manager.createSubTask(coding1);
 
         System.out.println("Список всех задач, подзадач и эпиков:");
         System.out.println(manager.getTaskList());

@@ -1,7 +1,6 @@
 package service;
 
 import model.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -131,11 +130,10 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void createSubTask(SubTask subTask, int masterTaskId) {
+    public void createSubTask(SubTask subTask) {
         subTask.setId(getNewId());
-        subTask.setMasterTaskId(masterTaskId);
         subTasks.put(subTask.getId(), subTask);
-        EpicTask masterTask = epicTasks.get(masterTaskId);
+        EpicTask masterTask = epicTasks.get(subTask.getMasterTaskId());
         masterTask.getSubTasksIdList().add(subTask.getId());
         checkEpicTaskStatus(masterTask);
     }

@@ -1,7 +1,6 @@
 package service;
 
 import model.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,7 +76,7 @@ public interface TaskManager {
      * Метод создания подзадачи, также обновляет статус соответствующего эпика
      * @param subTask - подзачдача (объект класса SubTask)
      */
-    void createSubTask(SubTask subTask, int masterTaskId);
+    void createSubTask(SubTask subTask);
 
     /**
      * Метод обновления задачи

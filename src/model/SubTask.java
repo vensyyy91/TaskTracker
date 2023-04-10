@@ -5,8 +5,9 @@ public class SubTask extends Task {
     /** Поле Идентификатор эпика, которому принадлежит подзадача */
     private int masterTaskId;
 
-    public SubTask(String name, String description) {
+    public SubTask(String name, String description, EpicTask masterTask) {
         super(name, description);
+        this.masterTaskId = masterTask.getId();
     }
 
     public int getMasterTaskId() {
