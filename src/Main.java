@@ -9,93 +9,56 @@ public class Main {
 
         Task shopping = new Task("Сходить в магазин",
                 "Сходить в продуктовый магазин, купить хлеба, десяток яиц, палку колбасы, кусок сыра");
-        manager.createTask(shopping);
+        manager.createTask(shopping); // id = 1
         Task film = new Task("Посмотреть фильмы",
                 "Посмотреть фильмы, которые находятся в закладках браузера");
-        manager.createTask(film);
-        EpicTask studying = new EpicTask("Сдать 3 ТЗ",
-                "Доделать и сдать финальное задание 3 спринта");
-        manager.createEpicTask(studying);
+        manager.createTask(film); // id = 2
+        EpicTask studying = new EpicTask("Сдать 5 ТЗ",
+                "Доделать и сдать финальное задание 5 спринта");
+        manager.createEpicTask(studying); // id = 3
         SubTask studying1 = new SubTask("Дописать код",
-                "Дописать код в классах Manager и SubTask", studying);
-        manager.createSubTask(studying1);
+                "Дописать код в классе InMemoryHistoryManager", studying);
+        manager.createSubTask(studying1); // id = 4
         SubTask studying2 = new SubTask("Сдать задание",
                 "Загрузить код на GitHub, отправить на проверку ревьюеру", studying);
-        manager.createSubTask(studying2);
+        manager.createSubTask(studying2); // id = 5
+        SubTask studying3 = new SubTask("Пройти ревью",
+                "Изучить фидбэк, при необходимости внести исправления", studying);
+        manager.createSubTask(studying3); // id = 6
         EpicTask coding = new EpicTask("Codewars",
                 "Попрактиковаться в решении задач на codewars");
-        manager.createEpicTask(coding);
-        SubTask coding1 = new SubTask("5 kyu",
-                "Поднять уровень в Java до 5 kyu", coding);
-        manager.createSubTask(coding1);
+        manager.createEpicTask(coding); // id = 7
 
-        System.out.println("Список всех задач, подзадач и эпиков:");
-        System.out.println(manager.getTaskList());
-        System.out.println(manager.getEpicTaskList());
-        System.out.println(manager.getSubTaskList());
-        System.out.println("----------------------------------------");
+        manager.getTaskById(1);
+        manager.getSubTaskById(4);
+        manager.getEpicTaskById(7);
+        manager.getTaskById(1);
+        printHistory(manager.getHistory());
 
-        System.out.println("Получение задачи, подзадачи или эпика по идентификаторам:");
-        System.out.println(manager.getTaskById(1));
-        System.out.println(manager.getEpicTaskById(3));
-        System.out.println(manager.getSubTaskById(5));
-        System.out.println(manager.getTaskById(1));
-        System.out.println(manager.getTaskById(2));
-        System.out.println(manager.getEpicTaskById(6));
-        System.out.println(manager.getSubTaskById(7));
-        System.out.println(manager.getSubTaskById(5));
-        System.out.println(manager.getSubTaskById(4));
-        System.out.println(manager.getTaskById(2));
-        System.out.println(manager.getEpicTaskById(3));
-        System.out.println("----------------------------------------");
+        manager.getSubTaskById(5);
+        manager.getEpicTaskById(3);
+        manager.getSubTaskById(4);
+        printHistory(manager.getHistory());
 
-        System.out.println("История просмотров:");
-        List<Task> taskHistory = manager.getHistory();
+        manager.getTaskById(1);
+        manager.getTaskById(2);
+        manager.getSubTaskById(6);
+        manager.getTaskById(1);
+        manager.getEpicTaskById(7);
+        manager.getSubTaskById(4);
+        printHistory(manager.getHistory());
+
+        manager.removeTaskById(2);
+        printHistory(manager.getHistory());
+
+        manager.removeEpicTaskById(3);
+        printHistory(manager.getHistory());
+    }
+
+    public static void printHistory(List<Task> taskHistory) {
         for (Task task : taskHistory) {
             System.out.println(task);
         }
-        System.out.println("----------------------------------------");
-
-        shopping.setStatus(TaskStatus.IN_PROGRESS);
-        manager.updateTask(shopping);
-        studying.setName("Сдать 3 финальное задание");
-        manager.updateEpicTask(studying);
-        studying1.setStatus(TaskStatus.IN_PROGRESS);
-        manager.updateSubTask(studying1);
-        coding1.setStatus(TaskStatus.DONE);
-        manager.updateSubTask(coding1);
-
-        System.out.println("Список после обновления:");
-        System.out.println(manager.getTaskList());
-        System.out.println(manager.getEpicTaskList());
-        System.out.println(manager.getSubTaskList());
-        System.out.println("----------------------------------------");
-
-        System.out.println("Список всех подзадач эпика с идентификатором 3:");
-        System.out.println(manager.getEpicSubTasks(3));
-        System.out.println("----------------------------------------");
-
-        manager.removeTaskById(1);
-        System.out.println("Задача с идентификатором 1 удалена.");
-        manager.removeEpicTaskById(6);
-        System.out.println("Эпик с идентификатором 6 удален.");
-        manager.removeSubTaskById(4);
-        System.out.println("Подзадача с идентификатором 4 удалена.");
-
-        System.out.println("Список после удаления отдельных заданий:");
-        System.out.println(manager.getTaskList());
-        System.out.println(manager.getEpicTaskList());
-        System.out.println(manager.getSubTaskList());
-        System.out.println("----------------------------------------");
-
-        manager.removeTasks();
-        manager.removeSubTasks();
-        manager.removeEpicTasks();
-
-        System.out.println("Список после удаления всех заданий:");
-        System.out.println(manager.getTaskList());
-        System.out.println(manager.getEpicTaskList());
-        System.out.println(manager.getSubTaskList());
         System.out.println("----------------------------------------");
     }
 }

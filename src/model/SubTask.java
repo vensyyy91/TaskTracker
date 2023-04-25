@@ -20,12 +20,7 @@ public class SubTask extends Task {
 
     @Override
     public String toString() {
-        return "SubTask{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", status='" + status + '\'' +
-                ", id=" + id +
-                ", masterTaskId=" + masterTaskId +
-                '}';
+        return String.format("SubTask{name='%s', description='%s', status=%s, masterTaskId=%d, id=%d}",
+                name, description, status, masterTaskId, id);
     }
 }

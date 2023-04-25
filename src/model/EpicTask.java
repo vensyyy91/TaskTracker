@@ -22,11 +22,7 @@ public class EpicTask extends Task {
 
     @Override
     public String toString() {
-        return "EpicTask{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", status='" + status + '\'' +
-                ", id=" + id +
-                '}';
+        return String.format("EpicTask{name='%s', description='%s', status=%s, id=%d}",
+                name, description, status, id);
     }
 }

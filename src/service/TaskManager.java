@@ -1,7 +1,6 @@
 package service;
 
 import model.*;
-import java.util.ArrayList;
 import java.util.List;
 
 /** Интерфейс для объектов-менеджеров, содержит список методов для управления задачами */
@@ -10,19 +9,19 @@ public interface TaskManager {
      * Метод получения списка задач
      * @return возвращает ArrayList со списком задач
      */
-    ArrayList<Task> getTaskList();
+    List<Task> getTaskList();
 
     /**
      * Метод получения списка эпиков
      * @return возвращает ArrayList со списком эпиков
      */
-    ArrayList<EpicTask> getEpicTaskList();
+    List<EpicTask> getEpicTaskList();
 
     /**
      * Метод получения списка подзадач
      * @return возвращает ArrayList со списком подзадач
      */
-    ArrayList<SubTask> getSubTaskList();
+    List<SubTask> getSubTaskList();
 
     /**
      * Метод удаления всех задач
@@ -119,7 +118,7 @@ public interface TaskManager {
      * @param id - идентификатор эпика
      * @return возвращает список подзадач
      */
-    ArrayList<SubTask> getEpicSubTasks(int id);
+    List<SubTask> getEpicSubTasks(int id);
 
     /**
      * Метод получения истории просмотров
