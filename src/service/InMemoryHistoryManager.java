@@ -32,9 +32,9 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     /** Класс для реализации двусвязного списка задач, позволяющий быстро удалить задачу из произвольного места */
-    public static class CustomLinkedList<Task> {
-        public Node<Task> head;
-        public Node<Task> tail;
+    private static class CustomLinkedList<Task> {
+        private Node<Task> head;
+        private Node<Task> tail;
         private int size = 0;
 
         /**
@@ -42,7 +42,7 @@ public class InMemoryHistoryManager implements HistoryManager {
          * @param task - задача
          * @return возвращает узел списка с добавленной задачей
          */
-        public Node<Task> linkLast(Task task) {
+        private Node<Task> linkLast(Task task) {
             final Node<Task> oldTail = tail;
             final Node<Task> newNode = new Node<>(oldTail, task, null);
             tail = newNode;
@@ -59,7 +59,7 @@ public class InMemoryHistoryManager implements HistoryManager {
          * Метод получения списка задач (собирает все задачи из CustomLinkedList в ArrayList)
          * @return возвращает списко задач ввиде ArrayList
          */
-        public List<Task> getTasks() {
+        private List<Task> getTasks() {
             final List<Task> tasks = new ArrayList<>(size);
             for (Node<Task> current = head; current != null; current = current.next) {
                 tasks.add(current.data);
@@ -71,7 +71,7 @@ public class InMemoryHistoryManager implements HistoryManager {
          * Метод удаления узла списка
          * @param node - узел
          */
-        public void removeNode(Node<Task> node) {
+        private void removeNode(Node<Task> node) {
             final Node<Task> prevNode = node.prev;
             final Node<Task> nextNode = node.next;
             if (prevNode == null) {

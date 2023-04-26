@@ -53,6 +53,10 @@ public class Main {
 
         manager.removeEpicTaskById(3);
         printHistory(manager.getHistory());
+
+        manager.removeTasks();
+        manager.removeEpicTasks();
+        printHistory(manager.getHistory());
     }
 
     public static void printHistory(List<Task> taskHistory) {

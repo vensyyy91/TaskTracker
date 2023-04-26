@@ -1,62 +1,21 @@
 package service;
 
 import model.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
 
 /** Класс для объекта-менеджера, в котором реализовано управление всеми задачами */
 public class InMemoryTaskManager implements TaskManager {
     /** Поле Задачи */
-    private final HashMap<Integer, Task> tasks = new HashMap<>();
+    private final Map<Integer, Task> tasks = new HashMap<>();
     /** Поле Эпики */
-    private final HashMap<Integer, EpicTask> epicTasks = new HashMap<>();
+    private final Map<Integer, EpicTask> epicTasks = new HashMap<>();
     /** Поле Подзадачи */
-    private final HashMap<Integer, SubTask> subTasks = new HashMap<>();
+    private final Map<Integer, SubTask> subTasks = new HashMap<>();
     /** Поле Идентификатор */
     private int id;
     /** Поле История просмотров */
     private final HistoryManager historyManager = Managers.getDefaultHistory();
-
-    /**
-     * Метод обновления статуса эпика
-     * @param epicTask - эпик (объект класса EpicTask)
-     */
-    private void checkEpicTaskStatus(EpicTask epicTask) {
-        boolean isInProgress = false;
-        boolean isDone = !epicTask.getSubTasksIdList().isEmpty();
-        for (Integer subTaskId : epicTask.getSubTasksIdList()) {
-            switch (subTasks.get(subTaskId).getStatus()) {
-                case DONE:
-                    isInProgress = true;
-                    break;
-                case IN_PROGRESS:
-                    isInProgress = true;
-                    isDone = false;
-                    break;
-                case NEW:
-                    isDone = false;
-                    break;
-            }
-        }
-        if (isDone) {
-            epicTask.setStatus(TaskStatus.DONE);
-        } else if (isInProgress) {
-            epicTask.setStatus(TaskStatus.IN_PROGRESS);
-        } else {
-            epicTask.setStatus(TaskStatus.NEW);
-        }
-    }
-
-    /**
-     * Метод получения уникального идентификатора
-     * @return возвращает уникальный идентификатор
-     */
-    private int getNewId() {
-        id++;
-        return id;
-    }
 
     @Override
     public List<Task> getTaskList() {
@@ -75,17 +34,29 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeTasks() {
+        for (Integer id : tasks.keySet()) {
+            historyManager.remove(id);
+        }
         tasks.clear();
     }
 
     @Override
     public void removeEpicTasks() {
+        for (Integer id : epicTasks.keySet()) {
+            historyManager.remove(id);
+        }
         epicTasks.clear();
+        for (Integer id : subTasks.keySet()) {
+            historyManager.remove(id);
+        }
         subTasks.clear();
     }
 
     @Override
     public void removeSubTasks() {
+        for (Integer id : subTasks.keySet()) {
+            historyManager.remove(id);
+        }
         subTasks.clear();
         for (EpicTask epicTask : epicTasks.values()) {
             epicTask.getSubTasksIdList().clear();
@@ -162,20 +133,18 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeEpicTaskById(int id) {
-        for (int subTaskId : epicTasks.get(id).getSubTasksIdList()) {
+        for (int subTaskId : epicTasks.remove(id).getSubTasksIdList()) {
             subTasks.remove(subTaskId);
             historyManager.remove(subTaskId);
         }
-        epicTasks.remove(id);
         historyManager.remove(id);
     }
 
     @Override
     public void removeSubTaskById(int id) {
-        EpicTask masterTask = epicTasks.get(subTasks.get(id).getMasterTaskId());
+        EpicTask masterTask = epicTasks.get(subTasks.remove(id).getMasterTaskId());
         masterTask.getSubTasksIdList().remove(Integer.valueOf(id));
         checkEpicTaskStatus(masterTask);
-        subTasks.remove(id);
         historyManager.remove(id);
     }
 
@@ -191,5 +160,44 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
+    }
+
+    /**
+     * Метод обновления статуса эпика
+     * @param epicTask - эпик (объект класса EpicTask)
+     */
+    private void checkEpicTaskStatus(EpicTask epicTask) {
+        boolean isInProgress = false;
+        boolean isDone = !epicTask.getSubTasksIdList().isEmpty();
+        for (Integer subTaskId : epicTask.getSubTasksIdList()) {
+            switch (subTasks.get(subTaskId).getStatus()) {
+                case DONE:
+                    isInProgress = true;
+                    break;
+                case IN_PROGRESS:
+                    isInProgress = true;
+                    isDone = false;
+                    break;
+                case NEW:
+                    isDone = false;
+                    break;
+            }
+        }
+        if (isDone) {
+            epicTask.setStatus(TaskStatus.DONE);
+        } else if (isInProgress) {
+            epicTask.setStatus(TaskStatus.IN_PROGRESS);
+        } else {
+            epicTask.setStatus(TaskStatus.NEW);
+        }
+    }
+
+    /**
+     * Метод получения уникального идентификатора
+     * @return возвращает уникальный идентификатор
+     */
+    private int getNewId() {
+        id++;
+        return id;
     }
 }
