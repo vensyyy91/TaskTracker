@@ -7,15 +7,15 @@ import java.util.*;
 /** Класс для объекта-менеджера, в котором реализовано управление всеми задачами */
 public class InMemoryTaskManager implements TaskManager {
     /** Поле Задачи */
-    private final Map<Integer, Task> tasks = new HashMap<>();
+    protected final Map<Integer, Task> tasks = new HashMap<>();
     /** Поле Эпики */
-    private final Map<Integer, EpicTask> epicTasks = new HashMap<>();
+    protected final Map<Integer, EpicTask> epicTasks = new HashMap<>();
     /** Поле Подзадачи */
-    private final Map<Integer, SubTask> subTasks = new HashMap<>();
+    protected final Map<Integer, SubTask> subTasks = new HashMap<>();
     /** Поле Идентификатор */
     private int id;
     /** Поле История просмотров */
-    private final HistoryManager historyManager = Managers.getDefaultHistory();
+    protected final HistoryManager historyManager = Managers.getDefaultHistory();
 
     @Override
     public List<Task> getTaskList() {

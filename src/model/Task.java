@@ -7,6 +7,7 @@ public class Task {
     protected String name;
     protected String description;
     protected TaskStatus status = TaskStatus.NEW;
+    protected TaskType type = TaskType.TASK;
     protected int id;
 
     public Task(String name, String description) {
@@ -63,7 +64,6 @@ public class Task {
 
     @Override
     public String toString() {
-        return String.format("Task{name='%s', description='%s', status=%s, id=%d}",
-                name, description, status, id);
+        return String.format("%d,%s,\"%s\",%s,\"%s\"", id, type, name, status, description);
     }
 }

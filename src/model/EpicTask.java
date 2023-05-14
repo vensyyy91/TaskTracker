@@ -10,6 +10,7 @@ public class EpicTask extends Task {
 
     public EpicTask(String name, String description) {
         super(name, description);
+        this.type = TaskType.EPIC;
     }
 
     public List<Integer> getSubTasksIdList() {
@@ -18,11 +19,5 @@ public class EpicTask extends Task {
 
     public void setSubTasksIdList(List<Integer> subTasksIdList) {
         this.subTasksIdList = subTasksIdList;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("EpicTask{name='%s', description='%s', status=%s, id=%d}",
-                name, description, status, id);
     }
 }

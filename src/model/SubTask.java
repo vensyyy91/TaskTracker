@@ -8,6 +8,7 @@ public class SubTask extends Task {
     public SubTask(String name, String description, EpicTask masterTask) {
         super(name, description);
         this.masterTaskId = masterTask.getId();
+        this.type = TaskType.SUBTASK;
     }
 
     public int getMasterTaskId() {
@@ -20,7 +21,6 @@ public class SubTask extends Task {
 
     @Override
     public String toString() {
-        return String.format("SubTask{name='%s', description='%s', status=%s, masterTaskId=%d, id=%d}",
-                name, description, status, masterTaskId, id);
+        return String.format("%d,%s,\"%s\",%s,\"%s\",%d", id, type, name, status, description, masterTaskId);
     }
 }
