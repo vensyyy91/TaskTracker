@@ -6,8 +6,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 
-public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
+/** Класс для объекта-менеджера, в котором реализовано управление всеми задачами, хранит данные в файле */
+public class FileBackedTaskManager extends InMemoryTaskManager {
     /** Поле Путь к файлу с данными */
     protected final String path;
 
@@ -123,7 +127,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
             for (SubTask subTask : subTasks.values()) {
                 writer.write(subTask.toString() + "\n");
             }
-            writer.write("\n" + Managers.historyToString(historyManager));
+            writer.write("\n" + Parser.historyToString(historyManager));
         } catch (IOException ex) {
             throw new ManagerSaveException("Произошла ошибка во время записи файла.");
         }
@@ -134,7 +138,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
      * @param value - строка с данными о задаче
      * @return возвращает задачу (объект класса Task)
      */
-    protected Task fromString(String value) {
+    private Task fromString(String value) {
         String[] taskData = value.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
         switch (taskData[1]) {
             case "TASK":
@@ -156,6 +160,51 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                 return subTask;
         }
         return null;
+    }
+
+    /**
+     * Метод, восстанавливающий данные менеджера из файла
+     * @param file - файл с данными
+     * @return возвращает объект класса FileBackedTaskManager
+     */
+    private static FileBackedTaskManager loadFromFile(File file) {
+        FileBackedTaskManager manager = new FileBackedTaskManager(file.getPath());
+        try {
+            String[] dataArray = Files.readString(Path.of(manager.path)).split("\n");
+            if (dataArray.length <= 1) {
+                return manager;
+            }
+            boolean isHistoryEmpty = true;
+            for (String data : dataArray) {
+                if (data.isBlank()) {
+                    isHistoryEmpty = false;
+                    break;
+                }
+                Task task = manager.fromString(data);
+                if (task instanceof EpicTask) {
+                    manager.epicTasks.put(task.getId(), (EpicTask) task);
+                } else if (task instanceof SubTask) {
+                    manager.subTasks.put(task.getId(), (SubTask) task);
+                } else if (task != null) {
+                    manager.tasks.put(task.getId(), task);
+                }
+            }
+            if (!isHistoryEmpty) {
+                List<Integer> historyIdList = Parser.historyFromString(dataArray[dataArray.length - 1]);
+                for (int id : historyIdList) {
+                    if (manager.tasks.containsKey(id)) {
+                        manager.historyManager.add(manager.tasks.get(id));
+                    } else if (manager.epicTasks.containsKey(id)) {
+                        manager.historyManager.add(manager.epicTasks.get(id));
+                    } else if (manager.subTasks.containsKey(id)) {
+                        manager.historyManager.add(manager.subTasks.get(id));
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            throw new ManagerSaveException("Произошла ошибка во время загрузки файла.");
+        }
+        return manager;
     }
 
     public static void main(String[] args) {
@@ -197,7 +246,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         manager.getEpicTaskById(7);
         manager.getSubTaskById(4); // история 5,3,2,6,1,7,4
 
-        FileBackedTaskManager newManager = Managers.loadFromFile(new File("resources" + File.separator + "tasks.csv"));
+        FileBackedTaskManager newManager = loadFromFile(new File("resources" + File.separator + "tasks.csv"));
         System.out.println("Задачи:");
         System.out.println(newManager.getTaskList());
         System.out.println("Эпики:");

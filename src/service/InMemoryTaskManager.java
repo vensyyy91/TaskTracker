@@ -4,7 +4,7 @@ import model.*;
 
 import java.util.*;
 
-/** Класс для объекта-менеджера, в котором реализовано управление всеми задачами */
+/** Класс для объекта-менеджера, в котором реализовано управление всеми задачами, хранит данные в оперативной памяти */
 public class InMemoryTaskManager implements TaskManager {
     /** Поле Задачи */
     protected final Map<Integer, Task> tasks = new HashMap<>();
