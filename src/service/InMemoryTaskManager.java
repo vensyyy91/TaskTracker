@@ -197,7 +197,6 @@ public class InMemoryTaskManager implements TaskManager {
      * @return возвращает уникальный идентификатор
      */
     private int getNewId() {
-        //id++;
         return ++id;
     }
 }
