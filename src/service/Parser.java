@@ -8,6 +8,9 @@ import java.util.StringJoiner;
 
 /** Утилитарный класс, отвечает за парсинг данных в файле */
 public class Parser {
+    private Parser() {
+    }
+
     /**
      * Метод перевода истории просмотров в текстовую строку
      * @param historyManager - объект класса HistoryManager (история просмотров)

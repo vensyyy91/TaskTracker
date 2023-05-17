@@ -13,7 +13,7 @@ public class InMemoryTaskManager implements TaskManager {
     /** Поле Подзадачи */
     protected final Map<Integer, SubTask> subTasks = new HashMap<>();
     /** Поле Идентификатор */
-    private int id;
+    protected int id;
     /** Поле История просмотров */
     protected final HistoryManager historyManager = Managers.getDefaultHistory();
 
@@ -197,7 +197,7 @@ public class InMemoryTaskManager implements TaskManager {
      * @return возвращает уникальный идентификатор
      */
     private int getNewId() {
-        id++;
-        return id;
+        //id++;
+        return ++id;
     }
 }

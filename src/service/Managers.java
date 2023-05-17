@@ -4,6 +4,9 @@ package service;
  * Утилитарный класс, отвечает за создание менеджеров
  */
 public class Managers {
+    private Managers() {
+    }
+
     /**
      * Метод получения объекта-менеджера задач
      * @return возвращает объект, реализуцющий интерфейс TaskManager

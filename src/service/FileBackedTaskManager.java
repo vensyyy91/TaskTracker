@@ -140,20 +140,22 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
      */
     private Task fromString(String value) {
         String[] taskData = value.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+        String name = taskData[2].substring(1,taskData[2].length() - 1);
+        String description = taskData[4].substring(1,taskData[4].length() - 1);
         switch (taskData[1]) {
             case "TASK":
-                Task task = new Task(taskData[2], taskData[4]);
+                Task task = new Task(name, description);
                 task.setId(Integer.parseInt(taskData[0]));
                 task.setStatus(TaskStatus.valueOf(taskData[3]));
                 return task;
             case "EPIC":
-                EpicTask epicTask = new EpicTask(taskData[2], taskData[4]);
+                EpicTask epicTask = new EpicTask(name, description);
                 epicTask.setId(Integer.parseInt(taskData[0]));
                 epicTask.setStatus(TaskStatus.valueOf(taskData[3]));
                 return epicTask;
             case "SUBTASK":
                 EpicTask masterTask = epicTasks.get(Integer.parseInt(taskData[5]));
-                SubTask subTask = new SubTask(taskData[2], taskData[4], masterTask);
+                SubTask subTask = new SubTask(name, description, masterTask);
                 subTask.setId(Integer.parseInt(taskData[0]));
                 subTask.setStatus(TaskStatus.valueOf(taskData[3]));
                 masterTask.getSubTasksIdList().add(subTask.getId());
@@ -174,6 +176,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             if (dataArray.length <= 1) {
                 return manager;
             }
+            int lastId = 0;
             boolean isHistoryEmpty = true;
             for (String data : dataArray) {
                 if (data.isBlank()) {
@@ -181,14 +184,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     break;
                 }
                 Task task = manager.fromString(data);
-                if (task instanceof EpicTask) {
-                    manager.epicTasks.put(task.getId(), (EpicTask) task);
-                } else if (task instanceof SubTask) {
-                    manager.subTasks.put(task.getId(), (SubTask) task);
-                } else if (task != null) {
-                    manager.tasks.put(task.getId(), task);
+                if (task!= null) {
+                    lastId = Math.max(task.getId(), lastId);
+                    if (task instanceof EpicTask) {
+                        manager.epicTasks.put(task.getId(), (EpicTask) task);
+                    } else if (task instanceof SubTask) {
+                        manager.subTasks.put(task.getId(), (SubTask) task);
+                    } else {
+                        manager.tasks.put(task.getId(), task);
+                    }
                 }
             }
+            manager.id = lastId;
             if (!isHistoryEmpty) {
                 List<Integer> historyIdList = Parser.historyFromString(dataArray[dataArray.length - 1]);
                 for (int id : historyIdList) {
@@ -257,5 +264,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         for (Task task : newManager.getHistory()) {
             System.out.println(task);
         }
+
+        Task project = new Task("Проект", "Доделать проект");
+        newManager.createTask(project);
+        System.out.println("После добавления задачи в новый менеджер:");
+        System.out.println(newManager.getTaskList());
     }
 }
