@@ -1,0 +1,5 @@
+id,type,name,status,description,start,end,epic
+1,TASK,"TestTask",NEW,"Task for test",25.06.2023 21:00,25.06.2023 21:30
+2,EPIC,"TestEpicTask",DONE,"EpicTask for test",25.06.2023 23:00,25.06.2023 23:30
+3,SUBTASK,"TestSubTask",DONE,"SubTask for test",25.06.2023 23:00,25.06.2023 23:30,2
+

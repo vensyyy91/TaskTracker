@@ -1,5 +1,6 @@
 package model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import java.util.List;
 public class EpicTask extends Task {
     /** Поле Список идентификаторов подзадач, принадлежащих эпику */
     private List<Integer> subTasksIdList = new ArrayList<>();
+    private LocalDateTime endTime = startTime.plus(duration);
 
     public EpicTask(String name, String description) {
         super(name, description);
@@ -19,5 +21,14 @@ public class EpicTask extends Task {
 
     public void setSubTasksIdList(List<Integer> subTasksIdList) {
         this.subTasksIdList = subTasksIdList;
+    }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
     }
 }

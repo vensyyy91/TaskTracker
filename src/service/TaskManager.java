@@ -125,4 +125,10 @@ public interface TaskManager {
      * @return возвращает список просмотренных задач
      */
     List<Task> getHistory();
+
+    /**
+     * Метод получения списка задач, отсортированных по времени старта
+     * @return возвращает список задач
+     */
+    List<Task> getPrioritizedTasks();
 }
