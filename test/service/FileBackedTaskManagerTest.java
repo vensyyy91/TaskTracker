@@ -8,8 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.time.Duration;
-import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,16 +16,12 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     @BeforeEach
     public void beforeEach() {
         manager = new FileBackedTaskManager("test" + File.separator + "test.csv");
-        task = new Task("TestTask", "Task for test");
-        task.setStartTime(LocalDateTime.of(2023, 6, 25, 21, 0));
-        task.setDuration(Duration.ofMinutes(30));
+        task = new Task("TestTask", "Task for test", "25.06.2023 21:00", 30);
         manager.createTask(task);
         epicTask = new EpicTask("TestEpicTask", "EpicTask for test");
         manager.createEpicTask(epicTask);
-        subTask = new SubTask("TestSubTask", "SubTask for test", epicTask);
+        subTask = new SubTask("TestSubTask", "SubTask for test", "25.06.2023 23:00", 30, epicTask);
         subTask.setStatus(TaskStatus.DONE);
-        subTask.setStartTime(LocalDateTime.of(2023, 6, 25, 23, 0));
-        subTask.setDuration(Duration.ofMinutes(30));
         manager.createSubTask(subTask);
     }
 

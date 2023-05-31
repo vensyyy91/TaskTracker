@@ -67,8 +67,7 @@ public class InMemoryTaskManager implements TaskManager {
         subTasks.clear();
         for (EpicTask epicTask : epicTasks.values()) {
             epicTask.getSubTasksIdList().clear();
-            checkEpicTaskStatus(epicTask);
-            checkEpicTaskTime(epicTask);
+            checkEpicTaskStatusAndTime(epicTask);
         }
     }
 
@@ -118,8 +117,7 @@ public class InMemoryTaskManager implements TaskManager {
         prioritizedTasks.add(subTask);
         EpicTask masterTask = epicTasks.get(subTask.getMasterTaskId());
         masterTask.getSubTasksIdList().add(subTask.getId());
-        checkEpicTaskStatus(masterTask);
-        checkEpicTaskTime(masterTask);
+        checkEpicTaskStatusAndTime(masterTask);
     }
 
     @Override
@@ -150,8 +148,7 @@ public class InMemoryTaskManager implements TaskManager {
         prioritizedTasks.add(subTask);
         subTasks.put(id, subTask);
         EpicTask masterTask = epicTasks.get(subTask.getMasterTaskId());
-        checkEpicTaskStatus(masterTask);
-        checkEpicTaskTime(masterTask);
+        checkEpicTaskStatusAndTime(masterTask);
     }
 
     @Override
@@ -181,8 +178,7 @@ public class InMemoryTaskManager implements TaskManager {
             prioritizedTasks.remove(subTasks.get(id));
             EpicTask masterTask = epicTasks.get(subTasks.remove(id).getMasterTaskId());
             masterTask.getSubTasksIdList().remove(Integer.valueOf(id));
-            checkEpicTaskStatus(masterTask);
-            checkEpicTaskTime(masterTask);
+            checkEpicTaskStatusAndTime(masterTask);
             historyManager.remove(id);
         }
     }
@@ -200,6 +196,14 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Task> getPrioritizedTasks() {
         return new ArrayList<>(prioritizedTasks);
+    }
+
+    /**
+     * Метод получения уникального идентификатора
+     * @return возвращает уникальный идентификатор
+     */
+    private int getNewId() {
+        return ++id;
     }
 
     /**
@@ -224,14 +228,6 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     /**
-     * Метод получения уникального идентификатора
-     * @return возвращает уникальный идентификатор
-     */
-    private int getNewId() {
-        return ++id;
-    }
-
-    /**
      * Метод обновления временных полей эпика (время старта, продолжительность, время завершения)
      * @param epicTask - эпик (объект класса EpicTask)
      */
@@ -252,6 +248,15 @@ public class InMemoryTaskManager implements TaskManager {
             epicTask.setDuration(Duration.ofMinutes(0));
             epicTask.setEndTime(LocalDateTime.of(2099, 12, 31, 0, 0));
         }
+    }
+
+    /**
+     * Метод, обновляющий статус и время эпика
+     * @param epicTask - эпик (объект класса EpicTask)
+     */
+    private void checkEpicTaskStatusAndTime(EpicTask epicTask) {
+        checkEpicTaskStatus(epicTask);
+        checkEpicTaskTime(epicTask);
     }
 
     /**

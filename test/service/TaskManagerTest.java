@@ -166,9 +166,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void createTaskWithTimeIntersection() {
-        Task newTask = new Task("NewTestTask", "New task for test");
-        newTask.setStartTime(LocalDateTime.of(2023, 6, 25, 21, 0));
-        newTask.setDuration(Duration.ofMinutes(30));
+        Task newTask = new Task("NewTestTask", "New task for test",
+                "25.06.2023 20:45", 30);
 
         TimeValidationException ex = assertThrows(TimeValidationException.class, () -> manager.createTask(newTask));
         assertEquals("Задача 'NewTestTask' пересекается по времени с другими задачами.", ex.getMessage());
@@ -186,9 +185,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void createSubTask() {
-        SubTask newSubTask = new SubTask("NewTestSubTask", "New SubTask for test", epicTask);
-        newSubTask.setStartTime(LocalDateTime.of(2023, 6, 25, 22, 0));
-        newSubTask.setDuration(Duration.ofMinutes(60));
+        SubTask newSubTask = new SubTask("NewTestSubTask", "New SubTask for test",
+                "25.06.2023 22:00", 60, epicTask);
         manager.createSubTask(newSubTask);
 
         assertEquals(4, newSubTask.getId(), "Подзадаче присваивается неверный id.");
@@ -205,9 +203,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void createSubTaskWithTimeIntersection() {
-        SubTask newSubTask = new SubTask("NewTestSubTask", "New SubTask for test", epicTask);
-        newSubTask.setStartTime(LocalDateTime.of(2023, 6, 25, 21, 15));
-        newSubTask.setDuration(Duration.ofMinutes(30));
+        SubTask newSubTask = new SubTask("NewTestSubTask", "New SubTask for test",
+                "25.06.2023 21:15", 30, epicTask);
 
         TimeValidationException ex = assertThrows(TimeValidationException.class, () -> manager.createTask(newSubTask));
         assertEquals("Задача 'NewTestSubTask' пересекается по времени с другими задачами.", ex.getMessage());
@@ -215,11 +212,10 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void updateTask() {
-        Task updatedTask = new Task("UpdatedTask", "New updated Task for test");
+        Task updatedTask = new Task("UpdatedTask", "New updated Task for test",
+                "25.06.2023 21:30", 15);
         updatedTask.setId(1);
         updatedTask.setStatus(TaskStatus.IN_PROGRESS);
-        updatedTask.setStartTime(LocalDateTime.of(2023, 6, 25, 21, 30));
-        updatedTask.setDuration(Duration.ofMinutes(15));
         manager.updateTask(updatedTask);
 
         assertEquals(updatedTask, manager.getTaskById(1), "Задача не обновляется.");
@@ -234,11 +230,10 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void updateTaskWithTimeIntersection() {
-        Task updatedTask = new Task("UpdatedTask", "New updated Task for test");
+        Task updatedTask = new Task("UpdatedTask", "New updated Task for test",
+                "25.06.2023 22:30", 45);
         updatedTask.setId(1);
         updatedTask.setStatus(TaskStatus.IN_PROGRESS);
-        updatedTask.setStartTime(LocalDateTime.of(2023, 6, 25, 22, 30));
-        updatedTask.setDuration(Duration.ofMinutes(45));
 
         TimeValidationException ex = assertThrows(TimeValidationException.class, () -> manager.updateTask(updatedTask));
         assertEquals("Задача 'UpdatedTask' пересекается по времени с другими задачами.", ex.getMessage());
@@ -257,11 +252,10 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void updateSubTask() {
-        SubTask updatedSubTask = new SubTask("UpdatedSubTask", "New updated SubTask for test", epicTask);
+        SubTask updatedSubTask = new SubTask("UpdatedSubTask", "New updated SubTask for test",
+                "25.06.2023 23:30", 15, epicTask);
         updatedSubTask.setId(3);
         updatedSubTask.setStatus(TaskStatus.IN_PROGRESS);
-        updatedSubTask.setStartTime(LocalDateTime.of(2023, 6, 25, 23, 30));
-        updatedSubTask.setDuration(Duration.ofMinutes(15));
         manager.updateSubTask(updatedSubTask);
 
         assertEquals(updatedSubTask, manager.getSubTaskById(3), "Подзадача не обновляется.");
@@ -283,11 +277,10 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void updateSubTaskWithTimeIntersection() {
-        SubTask updatedSubTask = new SubTask("UpdatedSubTask", "New updated SubTask for test", epicTask);
+        SubTask updatedSubTask = new SubTask("UpdatedSubTask", "New updated SubTask for test",
+                "25.06.2023 21:15", 45, epicTask);
         updatedSubTask.setId(3);
         updatedSubTask.setStatus(TaskStatus.IN_PROGRESS);
-        updatedSubTask.setStartTime(LocalDateTime.of(2023, 6, 25, 21, 15));
-        updatedSubTask.setDuration(Duration.ofMinutes(45));
 
         TimeValidationException ex = assertThrows(TimeValidationException.class, () -> manager.updateSubTask(updatedSubTask));
         assertEquals("Задача 'UpdatedSubTask' пересекается по времени с другими задачами.", ex.getMessage());
@@ -410,9 +403,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void getPrioritizedTasks() {
-        SubTask subTask2 = new SubTask("TestSubTask2", "Second SubTask for test", epicTask);
-        subTask2.setStartTime(LocalDateTime.of(2023, 6, 25, 20, 0));
-        subTask2.setDuration(Duration.ofMinutes(60));
+        SubTask subTask2 = new SubTask("TestSubTask2", "Second SubTask for test",
+                "25.06.2023 20:00", 60, epicTask);
         manager.createSubTask(subTask2);
         List<Task> prioritizedTasks = manager.getPrioritizedTasks();
 
@@ -428,5 +420,61 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
         assertNotNull(prioritizedTasks, "Список отсортированных задач не возвращается.");
         assertTrue(prioritizedTasks.isEmpty(), "Список отсортированных задач не пуст.");
+    }
+
+    @Test
+    void checkEpicTaskStatusWithNoSubtasks() {
+        manager.removeSubTasks();
+
+        assertEquals(TaskStatus.NEW, manager.getEpicTaskById(2).getStatus(), "Некорректный статус эпика.");
+    }
+
+    @Test
+    void checkEpicTaskStatusWithNEWSubtasks() {
+        subTask.setStatus(TaskStatus.NEW);
+        manager.updateSubTask(subTask);
+        SubTask subTask2 = new SubTask("TestSubTask2", "Second SubTask for test", epicTask);
+        manager.createSubTask(subTask2);
+        SubTask subTask3 = new SubTask("TestSubTask3", "Third SubTask for test", epicTask);
+        manager.createSubTask(subTask3);
+
+        assertEquals(TaskStatus.NEW, manager.getEpicTaskById(2).getStatus(), "Некорректный статус эпика.");
+    }
+
+    @Test
+    void checkEpicTaskStatusWithINPROGRESSSubtasks() {
+        subTask.setStatus(TaskStatus.IN_PROGRESS);
+        manager.updateSubTask(subTask);
+        SubTask subTask2 = new SubTask("TestSubTask2", "Second SubTask for test", epicTask);
+        subTask2.setStatus(TaskStatus.IN_PROGRESS);
+        manager.createSubTask(subTask2);
+        SubTask subTask3 = new SubTask("TestSubTask3", "Third SubTask for test", epicTask);
+        subTask3.setStatus(TaskStatus.IN_PROGRESS);
+        manager.createSubTask(subTask3);
+
+        assertEquals(TaskStatus.IN_PROGRESS, manager.getEpicTaskById(2).getStatus(), "Некорректный статус эпика.");
+    }
+
+    @Test
+    void checkEpicTaskStatusWithDONESubtasks() {
+        SubTask subTask2 = new SubTask("TestSubTask2", "Second SubTask for test", epicTask);
+        subTask2.setStatus(TaskStatus.DONE);
+        manager.createSubTask(subTask2);
+        SubTask subTask3 = new SubTask("TestSubTask3", "Third SubTask for test", epicTask);
+        subTask3.setStatus(TaskStatus.DONE);
+        manager.createSubTask(subTask3);
+
+        assertEquals(TaskStatus.DONE, manager.getEpicTaskById(2).getStatus(), "Некорректный статус эпика.");
+    }
+
+    @Test
+    void checkEpicTaskStatusWithDifferentSubtasks() {
+        SubTask subTask2 = new SubTask("TestSubTask2", "Second SubTask for test", epicTask);
+        manager.createSubTask(subTask2);
+        SubTask subTask3 = new SubTask("TestSubTask3", "Third SubTask for test", epicTask);
+        subTask3.setStatus(TaskStatus.IN_PROGRESS);
+        manager.createSubTask(subTask3);
+
+        assertEquals(TaskStatus.IN_PROGRESS, manager.getEpicTaskById(2).getStatus(), "Некорректный статус эпика.");
     }
 }

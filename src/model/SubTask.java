@@ -1,5 +1,7 @@
 package model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /** Класс подзадачи */
@@ -9,7 +11,17 @@ public class SubTask extends Task {
 
     public SubTask(String name, String description, EpicTask masterTask) {
         super(name, description);
+        this.startTime = LocalDateTime.of(2099, 12, 31, 0, 0);
+        this.duration = Duration.ofMinutes(0);
         this.masterTaskId = masterTask.getId();
+        this.status = TaskStatus.NEW;
+        this.type = TaskType.SUBTASK;
+    }
+
+    public SubTask(String name, String description, String startTime, long duration, EpicTask masterTask) {
+        super(name, description, startTime, duration);
+        this.masterTaskId = masterTask.getId();
+        this.status = TaskStatus.NEW;
         this.type = TaskType.SUBTASK;
     }
 

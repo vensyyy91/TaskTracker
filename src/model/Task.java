@@ -9,16 +9,29 @@ import java.util.Objects;
 public class Task {
     protected String name;
     protected String description;
-    protected TaskStatus status = TaskStatus.NEW;
-    protected TaskType type = TaskType.TASK;
+    protected TaskStatus status;
+    protected TaskType type;
     protected int id;
-    protected LocalDateTime startTime = LocalDateTime.of(2099, 12, 31, 0, 0);
-    protected Duration duration = Duration.ofMinutes(0);
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+    protected LocalDateTime startTime;
+    protected Duration duration;
+    protected final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
+        this.startTime = LocalDateTime.of(2099, 12, 31, 0, 0);
+        this.duration = Duration.ofMinutes(0);
+        this.status = TaskStatus.NEW;
+        this.type = TaskType.TASK;
+    }
+
+    public Task(String name, String description, String startTime, long duration) {
+        this.name = name;
+        this.description = description;
+        this.startTime = LocalDateTime.parse(startTime, formatter);
+        this.duration = Duration.ofMinutes(duration);
+        this.status = TaskStatus.NEW;
+        this.type = TaskType.TASK;
     }
 
     public String getName() {

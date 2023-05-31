@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -49,6 +50,21 @@ class HistoryManagerTest {
         assertNotNull(history, "История не возвращается.");
         assertEquals(history.size(), 1, "Размер истории не совпадает.");
         assertTrue(history.contains(task1), "Задача не добавляется.");
+    }
+
+    @Test
+    void addTaskThatIsAlreadyInHistory() {
+        historyManager.add(task1);
+        historyManager.add(task2);
+        historyManager.add(epicTask);
+        historyManager.add(subTask1);
+        historyManager.add(subTask2);
+        historyManager.add(task1);
+        historyManager.add(subTask1);
+        List<Task> history = historyManager.getHistory();
+
+        assertIterableEquals(Arrays.asList(task2, epicTask, subTask2, task1, subTask1), history,
+                "История просмотров не совпадает.");
     }
 
     @Test
