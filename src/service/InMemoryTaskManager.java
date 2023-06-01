@@ -278,12 +278,14 @@ public class InMemoryTaskManager implements TaskManager {
      * @param task - любая задача (объект класса Task, EpicTask или SubTask)
      */
     private void checkTimeIntersection(Task task) {
+        Map<LocalDateTime, Boolean> currentTimeMap = new HashMap<>(timeMap);
         LocalDateTime time = task.getStartTime();
         if (time.equals(LocalDateTime.of(2099, 12, 31, 0, 0))) {
             return;
         }
         while (time.isBefore(task.getEndTime())) {
             if (timeMap.get(time)) {
+                timeMap.putAll(currentTimeMap);
                 throw new TimeValidationException("Задача '" + task.getName() + "' пересекается по времени с другими задачами.");
             } else {
                 timeMap.put(time, true);
