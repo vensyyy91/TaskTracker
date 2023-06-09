@@ -1,6 +1,7 @@
 package service;
 
 import model.*;
+import service.exception.TimeValidationException;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -27,6 +28,25 @@ public class InMemoryTaskManager implements TaskManager {
     /** Константа, хранящая количество 15-минутных промежутков в году */
     private static final int INTERVALS_15MIN_IN_YEAR = 365 * 24 * 4;
 
+    @Override
+    public Map<Integer, Task> getTasksMap() {
+        return tasks;
+    }
+
+    @Override
+    public Map<Integer, EpicTask> getEpicTasksMap() {
+        return epicTasks;
+    }
+
+    @Override
+    public Map<Integer, SubTask> getSubTasksMap() {
+        return subTasks;
+    }
+
+    @Override
+    public HistoryManager getHistoryManager() {
+        return historyManager;
+    }
 
     @Override
     public List<Task> getTaskList() {

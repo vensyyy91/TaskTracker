@@ -12,7 +12,7 @@ public class Managers {
      * @return возвращает объект, реализуцющий интерфейс TaskManager
      */
     public static TaskManager getDefault() {
-        return new InMemoryTaskManager();
+        return new HttpTaskManager("http://localhost:8078/");
     }
 
     /**

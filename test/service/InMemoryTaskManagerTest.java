@@ -10,7 +10,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<TaskManager> {
 
     @BeforeEach
     public void beforeEach() {
-        manager = Managers.getDefault();
+        manager = new InMemoryTaskManager();
         task = new Task("TestTask", "Task for test", "25.06.2023 21:00", 30);
         manager.createTask(task);
         epicTask = new EpicTask("TestEpicTask", "EpicTask for test");

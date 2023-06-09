@@ -1,14 +1,18 @@
 import model.*;
 import service.*;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        KVServer kvServer = new KVServer();
+        kvServer.start();
         TaskManager manager = Managers.getDefault();
+        HttpTaskServer server = new HttpTaskServer(manager);
+        server.start();
 
         Task shopping = new Task("Сходить в магазин",
                 "Сходить в продуктовый магазин, купить хлеба, десяток яиц, палку колбасы, кусок сыра");
@@ -46,12 +50,5 @@ public class Main {
         System.out.println("-----------------------------------------");
         manager.getPrioritizedTasks().forEach(System.out::println);
         System.out.println("-----------------------------------------");
-    }
-
-    public static void printHistory(List<Task> taskHistory) {
-        for (Task task : taskHistory) {
-            System.out.println(task);
-        }
-        System.out.println("----------------------------------------");
     }
 }

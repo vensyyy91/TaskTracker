@@ -1,6 +1,5 @@
 package model;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,13 +8,16 @@ import java.util.List;
 public class EpicTask extends Task {
     /** Поле Список идентификаторов подзадач, принадлежащих эпику */
     private List<Integer> subTasksIdList = new ArrayList<>();
+    /** Поле Время окончания */
     private LocalDateTime endTime = startTime.plus(duration);
 
     public EpicTask(String name, String description) {
         super(name, description);
-        this.startTime = LocalDateTime.of(2099, 12, 31, 0, 0);
-        this.duration = Duration.ofMinutes(0);
-        this.status = TaskStatus.NEW;
+        this.type = TaskType.EPIC;
+    }
+
+    public EpicTask(String name, String description, String startTime, long duration) {
+        super(name, description, startTime, duration);
         this.type = TaskType.EPIC;
     }
 

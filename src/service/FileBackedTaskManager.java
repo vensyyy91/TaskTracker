@@ -1,6 +1,7 @@
 package service;
 
 import model.*;
+import service.exception.ManagerSaveException;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -118,9 +119,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     /**
      * Метод сохранения текущего состояния менеджера в файл
      */
-    private void save() {
+    protected void save() {
         try (FileWriter writer = new FileWriter(path, StandardCharsets.UTF_8)) {
-            writer.write("id,type,name,status,description,start,end,epic\n");
+            writer.write("id,type,name,status,description,start,end,masterTaskId\n");
             for (Task task : tasks.values()) {
                 writer.write(task.toString() + "\n");
             }
@@ -197,7 +198,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     break;
                 }
                 Task task = manager.fromString(data[i]);
-                if (task!= null) {
+                if (task != null) {
                     lastId = Math.max(task.getId(), lastId);
                     if (task instanceof EpicTask) {
                         manager.epicTasks.put(task.getId(), (EpicTask) task);
