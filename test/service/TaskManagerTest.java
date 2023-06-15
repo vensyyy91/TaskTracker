@@ -187,7 +187,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void createSubTask() {
         SubTask newSubTask = new SubTask("NewTestSubTask", "New SubTask for test",
-                "25.06.2023 22:00", 60, epicTask);
+                "25.06.2023 22:00", 60, epicTask.getId());
         manager.createSubTask(newSubTask);
 
         assertEquals(4, newSubTask.getId(), "Подзадаче присваивается неверный id.");
@@ -205,7 +205,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void createSubTaskWithTimeIntersection() {
         SubTask newSubTask = new SubTask("NewTestSubTask", "New SubTask for test",
-                "25.06.2023 21:15", 30, epicTask);
+                "25.06.2023 21:15", 30, epicTask.getId());
 
         TimeValidationException ex = assertThrows(TimeValidationException.class, () -> manager.createTask(newSubTask));
         assertEquals("Задача 'NewTestSubTask' пересекается по времени с другими задачами.", ex.getMessage());
@@ -254,7 +254,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void updateSubTask() {
         SubTask updatedSubTask = new SubTask("UpdatedSubTask", "New updated SubTask for test",
-                "25.06.2023 23:30", 15, epicTask);
+                "25.06.2023 23:30", 15, epicTask.getId());
         updatedSubTask.setId(3);
         updatedSubTask.setStatus(TaskStatus.IN_PROGRESS);
         manager.updateSubTask(updatedSubTask);
@@ -279,7 +279,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void updateSubTaskWithTimeIntersection() {
         SubTask updatedSubTask = new SubTask("UpdatedSubTask", "New updated SubTask for test",
-                "25.06.2023 21:15", 45, epicTask);
+                "25.06.2023 21:15", 45, epicTask.getId());
         updatedSubTask.setId(3);
         updatedSubTask.setStatus(TaskStatus.IN_PROGRESS);
 
@@ -405,7 +405,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void getPrioritizedTasks() {
         SubTask subTask2 = new SubTask("TestSubTask2", "Second SubTask for test",
-                "25.06.2023 20:00", 60, epicTask);
+                "25.06.2023 20:00", 60, epicTask.getId());
         manager.createSubTask(subTask2);
         List<Task> prioritizedTasks = manager.getPrioritizedTasks();
 
@@ -434,9 +434,9 @@ abstract class TaskManagerTest<T extends TaskManager> {
     void checkEpicTaskStatusWithNEWSubtasks() {
         subTask.setStatus(TaskStatus.NEW);
         manager.updateSubTask(subTask);
-        SubTask subTask2 = new SubTask("TestSubTask2", "Second SubTask for test", epicTask);
+        SubTask subTask2 = new SubTask("TestSubTask2", "Second SubTask for test", epicTask.getId());
         manager.createSubTask(subTask2);
-        SubTask subTask3 = new SubTask("TestSubTask3", "Third SubTask for test", epicTask);
+        SubTask subTask3 = new SubTask("TestSubTask3", "Third SubTask for test", epicTask.getId());
         manager.createSubTask(subTask3);
 
         assertEquals(TaskStatus.NEW, manager.getEpicTaskById(2).getStatus(), "Некорректный статус эпика.");
@@ -446,10 +446,10 @@ abstract class TaskManagerTest<T extends TaskManager> {
     void checkEpicTaskStatusWithINPROGRESSSubtasks() {
         subTask.setStatus(TaskStatus.IN_PROGRESS);
         manager.updateSubTask(subTask);
-        SubTask subTask2 = new SubTask("TestSubTask2", "Second SubTask for test", epicTask);
+        SubTask subTask2 = new SubTask("TestSubTask2", "Second SubTask for test", epicTask.getId());
         subTask2.setStatus(TaskStatus.IN_PROGRESS);
         manager.createSubTask(subTask2);
-        SubTask subTask3 = new SubTask("TestSubTask3", "Third SubTask for test", epicTask);
+        SubTask subTask3 = new SubTask("TestSubTask3", "Third SubTask for test", epicTask.getId());
         subTask3.setStatus(TaskStatus.IN_PROGRESS);
         manager.createSubTask(subTask3);
 
@@ -458,10 +458,10 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void checkEpicTaskStatusWithDONESubtasks() {
-        SubTask subTask2 = new SubTask("TestSubTask2", "Second SubTask for test", epicTask);
+        SubTask subTask2 = new SubTask("TestSubTask2", "Second SubTask for test", epicTask.getId());
         subTask2.setStatus(TaskStatus.DONE);
         manager.createSubTask(subTask2);
-        SubTask subTask3 = new SubTask("TestSubTask3", "Third SubTask for test", epicTask);
+        SubTask subTask3 = new SubTask("TestSubTask3", "Third SubTask for test", epicTask.getId());
         subTask3.setStatus(TaskStatus.DONE);
         manager.createSubTask(subTask3);
 
@@ -470,9 +470,9 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void checkEpicTaskStatusWithDifferentSubtasks() {
-        SubTask subTask2 = new SubTask("TestSubTask2", "Second SubTask for test", epicTask);
+        SubTask subTask2 = new SubTask("TestSubTask2", "Second SubTask for test", epicTask.getId());
         manager.createSubTask(subTask2);
-        SubTask subTask3 = new SubTask("TestSubTask3", "Third SubTask for test", epicTask);
+        SubTask subTask3 = new SubTask("TestSubTask3", "Third SubTask for test", epicTask.getId());
         subTask3.setStatus(TaskStatus.IN_PROGRESS);
         manager.createSubTask(subTask3);
 

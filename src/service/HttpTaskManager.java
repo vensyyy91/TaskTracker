@@ -13,78 +13,95 @@ import service.serializer.TaskSerializer;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /** Класс для объекта-менеджера, в котором реализовано управление всеми задачами, хранит данные на сервере */
 public class HttpTaskManager extends FileBackedTaskManager {
     /** Поле Клиент */
     private final KVTaskClient client;
-    /** Поле объект Класса Gson для серилизации/десериализации */
-    private final Gson gson = new GsonBuilder()
-            .registerTypeAdapter(Task.class, new TaskSerializer(this))
+    /** Поле-константа объект класса Gson для серилизации/десериализации */
+    private final static Gson gson = new GsonBuilder()
+            .registerTypeAdapter(Task.class, new TaskSerializer())
             .registerTypeAdapter(EpicTask.class, new EpicTaskSerializer())
-            .registerTypeAdapter(SubTask.class, new SubTaskSerializer(this))
+            .registerTypeAdapter(SubTask.class, new SubTaskSerializer())
             .create();
+    /** Поле-константа Ключ для получения списка всех задач с сервера */
+    private final static String TASK_KEY = "task";
+    /** Поле-константа Ключ для получения списка всех эпиков с сервера */
+    private final static String EPIC_KEY = "epic";
+    /** Поле-константа Ключ для получения списка всех подзадач с сервера */
+    private final static String SUBTASK_KEY = "subtask";
+    /** Поле-константа Ключ для получения списка истории с сервера */
+    private final static String HISTORY_KEY = "history";
 
-    public HttpTaskManager(String url) {
+    public HttpTaskManager(String url, boolean isLoading) {
         super(url);
         client = new KVTaskClient(url);
-        loadFromServer(client);
+        if (isLoading) {
+            loadFromServer();
+        }
+    }
+
+    public HttpTaskManager(String url) {
+        this(url, false);
     }
 
     @Override
     protected void save() {
-        client.put("task", gson.toJson(getTaskList()));
-        client.put("epic", gson.toJson(getEpicTaskList()));
-        client.put("subtask", gson.toJson(getSubTaskList()));
-        client.put("history", gson.toJson(getHistory()));
+        client.put(TASK_KEY, gson.toJson(getTaskList()));
+        client.put(EPIC_KEY, gson.toJson(getEpicTaskList()));
+        client.put(SUBTASK_KEY, gson.toJson(getSubTaskList()));
+        client.put(HISTORY_KEY, gson.toJson(getHistory().stream().map(Task::getId).collect(Collectors.toList())));
     }
 
     /**
      * Метод восстановления состояния менеджера с сервера через клиент
-     * @param client - клиент
      */
-    private void loadFromServer(KVTaskClient client) {
+    private void loadFromServer() {
         int lastId = 0;
-        String taskJson = client.load("task");
+        String taskJson = client.load(TASK_KEY);
         Type TaskType = new TypeToken<ArrayList<Task>>() {}.getType();
         if (!taskJson.isBlank()) {
             List<Task> taskList = gson.fromJson(taskJson, TaskType);
-            taskList.forEach(task -> tasks.put(task.getId(), task));
-            for (Integer id : tasks.keySet()) {
-                if (id > lastId) {
-                    lastId = id;
-                }
+            for (Task task : taskList) {
+                lastId = Math.max(lastId, task.getId());
+                tasks.put(task.getId(), task);
+                prioritizedTasks.add(task);
             }
-            prioritizedTasks.addAll(taskList);
         }
-        String epicTaskJson = client.load("epic");
+        String epicTaskJson = client.load(EPIC_KEY);
         Type EpicTaskType = new TypeToken<ArrayList<EpicTask>>() {}.getType();
         if (!epicTaskJson.isBlank()) {
             List<EpicTask> epicTaskList = gson.fromJson(epicTaskJson, EpicTaskType);
-            epicTaskList.forEach(epicTask -> epicTasks.put(epicTask.getId(), epicTask));
-            for (Integer id : epicTasks.keySet()) {
-                if (id > lastId) {
-                    lastId = id;
-                }
+            for (EpicTask epicTask : epicTaskList) {
+                lastId = Math.max(lastId, epicTask.getId());
+                epicTasks.put(epicTask.getId(), epicTask);
             }
         }
-        String subTaskJson = client.load("subtask");
+        String subTaskJson = client.load(SUBTASK_KEY);
         Type SubTaskType = new TypeToken<ArrayList<SubTask>>() {}.getType();
         if (!subTaskJson.isBlank()) {
             List<SubTask> subTaskList = gson.fromJson(subTaskJson, SubTaskType);
-            subTaskList.forEach(subTask -> subTasks.put(subTask.getId(), subTask));
-            for (Integer id : subTasks.keySet()) {
-                if (id > lastId) {
-                    lastId = id;
-                }
+            for (SubTask subTask : subTaskList) {
+                lastId = Math.max(lastId, subTask.getId());
+                subTasks.put(subTask.getId(), subTask);
+                prioritizedTasks.add(subTask);
             }
-            prioritizedTasks.addAll(subTaskList);
         }
         id = lastId;
-        String historyJson = client.load("history");
+        String historyJson = client.load(HISTORY_KEY);
         if (!historyJson.isBlank()) {
-            List<Task> history = gson.fromJson(historyJson, TaskType);
-            history.forEach(historyManager::add);
+            String history = historyJson.replace("[", "").replace("]", "");
+            List<Integer> historyIdList = Parser.historyFromString(history);
+            for (int id : historyIdList) {
+                if (tasks.containsKey(id)) {
+                    historyManager.add(tasks.get(id));
+                } else if (epicTasks.containsKey(id)) {
+                    historyManager.add(epicTasks.get(id));
+                } else if (subTasks.containsKey(id)) {
+                    historyManager.add(subTasks.get(id));
+                }
+            }
         }
     }
 }

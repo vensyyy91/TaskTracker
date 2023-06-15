@@ -43,7 +43,7 @@ public class KVServer {
 					return;
 				}
 				String value = data.get(key);
-				if (value.isEmpty()) {
+				if (value == null) {
 					System.out.println("По указанному ключу " + key + " отсутствует значение.");
 					h.sendResponseHeaders(404, 0);
 					return;

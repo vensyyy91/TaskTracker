@@ -1,6 +1,6 @@
 package service;
 
-import service.exception.ManagerSaveException;
+import service.exception.*;
 
 import java.io.IOException;
 import java.net.URI;
@@ -14,22 +14,13 @@ public class KVTaskClient {
     private final HttpClient client;
     /** Поле Ссылка к серверу */
     private final String url;
-    /** Токен, который выдается при регистрации на сервере */
-    private String apiToken;
+    /** Поле Токен, который выдается при регистрации на сервере */
+    private final String apiToken;
 
     public KVTaskClient(String url) {
         client = HttpClient.newHttpClient();
         this.url = url;
-        URI uri = URI.create(url + "register");
-        HttpRequest request = HttpRequest.newBuilder().uri(uri).GET().build();
-        try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.statusCode());
-            apiToken = response.body();
-        } catch (IOException | InterruptedException ex) {
-            System.out.println("Во время выполнения запроса возникла ошибка.\n" +
-                    "Проверьте, пожалуйста, адрес и повторите попытку.");
-        }
+        this.apiToken = register();
     }
 
     /**
@@ -44,12 +35,12 @@ public class KVTaskClient {
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
         try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<Void> response = client.send(request, HttpResponse.BodyHandlers.discarding());
             if (response.statusCode() != 200) {
-                throw new ManagerSaveException("Произошла ошибка при сохранении на сервер, код состояния: " +  response.statusCode());
+                throw new ClientSaveException("Произошла ошибка при сохранении на сервер, код ответа: " +  response.statusCode());
             }
         } catch (IOException | InterruptedException ex) {
-            System.out.println("Во время выполнения запроса возникла ошибка.\n" +
+            throw new ClientSaveException("Во время выполнения запроса возникла ошибка.\n" +
                     "Проверьте, пожалуйста, адрес и повторите попытку.");
         }
     }
@@ -60,7 +51,6 @@ public class KVTaskClient {
      * @return возвращает данные в формате json
      */
     public String load(String key) {
-        String value = "";
         URI uri = URI.create(url + "load/" + key + "?API_TOKEN=" + apiToken);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
@@ -68,11 +58,32 @@ public class KVTaskClient {
                 .build();
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            value = response.body();
+            if (response.statusCode() != 200) {
+                throw new ClientLoadException("Произошла ошибка при загрузке с сервера, код ответа: " +  response.statusCode());
+            }
+            return response.body();
         } catch (IOException | InterruptedException ex) {
-            System.out.println("Во время выполнения запроса возникла ошибка.\n" +
+            throw new ClientLoadException("Во время выполнения запроса возникла ошибка.\n" +
                     "Проверьте, пожалуйста, адрес и повторите попытку.");
         }
-        return value;
+    }
+
+    /**
+     * Метод регистрации на сервере
+     * @return возращает уникальный токен
+     */
+    private String register() {
+        URI uri = URI.create(url + "register");
+        HttpRequest request = HttpRequest.newBuilder().uri(uri).GET().build();
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() != 200) {
+                throw new RegistrationException("Произошла ошибка при регистрации, код состояния: " + response.statusCode());
+            }
+            return response.body();
+        } catch (IOException | InterruptedException ex) {
+            throw new RegistrationException("Во время выполнения запроса возникла ошибка.\n" +
+                    "Проверьте, пожалуйста, адрес и повторите попытку.");
+        }
     }
 }

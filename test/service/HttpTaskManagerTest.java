@@ -9,8 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,7 +24,7 @@ public class HttpTaskManagerTest extends TaskManagerTest<TaskManager> {
         manager.createTask(task);
         epicTask = new EpicTask("TestEpicTask", "EpicTask for test");
         manager.createEpicTask(epicTask);
-        subTask = new SubTask("TestSubTask", "SubTask for test", "25.06.2023 23:00", 30, epicTask);
+        subTask = new SubTask("TestSubTask", "SubTask for test", "25.06.2023 23:00", 30, 2);
         subTask.setStatus(TaskStatus.DONE);
         manager.createSubTask(subTask);
     }
@@ -41,23 +39,19 @@ public class HttpTaskManagerTest extends TaskManagerTest<TaskManager> {
         manager.getEpicTaskById(2);
         manager.getTaskById(1);
         manager.getSubTaskById(3);
-        HistoryManager historyManager = manager.getHistoryManager();
-        manager.getTasksMap().keySet().forEach(historyManager::remove);
-        manager.getEpicTasksMap().keySet().forEach(historyManager::remove);
-        manager.getSubTasksMap().keySet().forEach(historyManager::remove);
-        manager.getTasksMap().clear();
-        manager.getEpicTasksMap().clear();
-        manager.getSubTasksMap().clear();
+        HttpTaskManager newManager = new HttpTaskManager("http://localhost:8078/", true);
 
-        TaskManager newManager = Managers.getDefault();
-
-        assertEquals(Collections.singletonList(task), newManager.getTaskList(),
+        assertEquals(manager.getTaskList(), newManager.getTaskList(),
                 "Списки задач не совпадают.");
-        assertEquals(Collections.singletonList(epicTask), newManager.getEpicTaskList(),
+        assertEquals(manager.getEpicTaskList(), newManager.getEpicTaskList(),
                 "Списки эпиков не совпадают.");
-        assertEquals(Collections.singletonList(subTask), newManager.getSubTaskList(),
+        assertEquals(manager.getSubTaskList(), newManager.getSubTaskList(),
                 "Списки подзадач не совпадают.");
-        assertEquals(Arrays.asList(epicTask, task, subTask), newManager.getHistory(),
+        assertEquals(manager.getHistory(), newManager.getHistory(),
                 "Списки истории просмотров не совпадают.");
+        assertEquals(manager.getPrioritizedTasks(), newManager.getPrioritizedTasks(),
+                "Списки отсортированных задач не совпадают.");
+        assertEquals(manager.getId(), newManager.getId(),
+                "Идентификаторы не совпадают.");
     }
 }

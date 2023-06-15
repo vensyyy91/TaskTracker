@@ -10,7 +10,6 @@ import model.Task;
 import service.serializer.*;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.URI;
@@ -28,6 +27,12 @@ public class HttpTaskServer {
     private final TaskManager manager;
     /** Поле Сервер */
     private final HttpServer server;
+    /** Поле-константа объект класса Gson для серилизации/десериализации */
+    private final static Gson gson = new GsonBuilder()
+            .registerTypeAdapter(Task.class, new TaskSerializer())
+            .registerTypeAdapter(EpicTask.class, new EpicTaskSerializer())
+            .registerTypeAdapter(SubTask.class, new SubTaskSerializer())
+            .create();
 
     public HttpTaskServer(TaskManager manager) throws IOException {
         this.manager = manager;
@@ -53,11 +58,6 @@ public class HttpTaskServer {
      * @throws IOException - если заголовки ответа уже были отправлены или произошла ошибка ввода-вывода
      */
     private void handleTasks(HttpExchange exchange) throws IOException {
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Task.class, new TaskSerializer(manager))
-                .registerTypeAdapter(EpicTask.class, new EpicTaskSerializer())
-                .registerTypeAdapter(SubTask.class, new SubTaskSerializer(manager))
-                .create();
         String method = exchange.getRequestMethod();
         URI uri = exchange.getRequestURI();
         String path = uri.getPath();
@@ -139,8 +139,12 @@ public class HttpTaskServer {
                 }
                 break;
             case "POST":
-                InputStream inputStream = exchange.getRequestBody();
-                String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
+                String body = readBody(exchange);
+                if (body.isEmpty()) {
+                    exchange.sendResponseHeaders(400, 0);
+                    response = "Произошла ошибка, проверьте корректность ссылки.";
+                    break;
+                }
                 boolean isExisting;
                 if (pathParts.length == 3) {
                     switch (pathParts[2]) {
@@ -259,6 +263,26 @@ public class HttpTaskServer {
                 exchange.sendResponseHeaders(405, 0);
                 response = "Ожидается GET, POST или DELETE запрос, получили: " + exchange.getRequestMethod();
         }
+        writeResponse(exchange, response);
+    }
+
+    /**
+     * Метод чтения тела запроса
+     * @param exchange - объект класса HttpExchange
+     * @return возвращает тело запроса
+     * @throws IOException - если произошла ошибка ввода-вывода
+     */
+    private String readBody(HttpExchange exchange) throws IOException {
+        return new String(exchange.getRequestBody().readAllBytes(), DEFAULT_CHARSET);
+    }
+
+    /**
+     * Метод записи в тело ответа
+     * @param exchange - объект класса HttpExchange
+     * @param response - текст, который необходимо записать в тело ответа
+     * @throws IOException - если произошла ошибка ввода-вывода
+     */
+    private void writeResponse(HttpExchange exchange, String response) throws IOException {
         try (OutputStream os = exchange.getResponseBody()) {
             os.write(response.getBytes());
         }

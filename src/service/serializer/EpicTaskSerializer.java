@@ -53,6 +53,9 @@ public class EpicTaskSerializer implements JsonSerializer<EpicTask>, JsonDeseria
         if (jsonObject.has("duration")) {
             epicTask.setDuration(Duration.ofMinutes(jsonObject.get("duration").getAsLong()));
         }
+        if (jsonObject.has("endTime")) {
+            epicTask.setEndTime(LocalDateTime.parse(jsonObject.get("endTime").getAsString(), formatter));
+        }
         if (jsonObject.has("subTasksIdList")) {
             String[] idString = jsonObject.get("subTasksIdList").getAsString()
                     .replace("[", "")

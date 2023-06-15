@@ -26,17 +26,17 @@ public class Main {
                 "Доделать и сдать финальное задание 7 спринта");
         manager.createEpicTask(studying); // id = 3
         SubTask studying1 = new SubTask("Дописать тесты",
-                "Дописать тесты на все методы", studying);
+                "Дописать тесты на все методы", 3);
         studying1.setStartTime(LocalDateTime.of(2023,6,25,22,0));
         studying1.setDuration(Duration.ofMinutes(60));
         manager.createSubTask(studying1); // id = 4
         SubTask studying2 = new SubTask("Сдать задание",
-                "Загрузить код на GitHub, отправить на проверку ревьюеру", studying);
+                "Загрузить код на GitHub, отправить на проверку ревьюеру", 3);
         studying2.setStartTime(LocalDateTime.of(2023,6,25,23,0));
         studying2.setDuration(Duration.ofMinutes(10));
         manager.createSubTask(studying2); // id = 5
         SubTask studying3 = new SubTask("Пройти ревью",
-                "Изучить фидбэк, при необходимости внести исправления", studying);
+                "Изучить фидбэк, при необходимости внести исправления", 3);
         studying3.setStartTime(LocalDateTime.of(2023,6,26,22,0));
         studying3.setDuration(Duration.ofMinutes(60));
         manager.createSubTask(studying3); // id = 6

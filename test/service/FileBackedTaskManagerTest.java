@@ -21,7 +21,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         manager.createTask(task);
         epicTask = new EpicTask("TestEpicTask", "EpicTask for test");
         manager.createEpicTask(epicTask);
-        subTask = new SubTask("TestSubTask", "SubTask for test", "25.06.2023 23:00", 30, epicTask);
+        subTask = new SubTask("TestSubTask", "SubTask for test", "25.06.2023 23:00", 30, 2);
         subTask.setStatus(TaskStatus.DONE);
         manager.createSubTask(subTask);
     }

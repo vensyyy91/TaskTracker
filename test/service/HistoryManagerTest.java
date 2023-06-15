@@ -24,16 +24,16 @@ class HistoryManagerTest {
 
     @BeforeAll
     public static void beforeAll() {
-        manager = Managers.getDefault();
+        manager = new InMemoryTaskManager();
         task1 = new Task("TestTask1", "First task for test");
         manager.createTask(task1); // id:1
         task2 = new Task("TestTask2", "Second task for test");
         manager.createTask(task2); // id:2
         epicTask = new EpicTask("TestEpicTask", "EpicTask for test");
         manager.createEpicTask(epicTask); // id:3
-        subTask1 = new SubTask("SubTask1", "First subtask for test", epicTask);
+        subTask1 = new SubTask("SubTask1", "First subtask for test", 3);
         manager.createSubTask(subTask1); // id:4
-        subTask2 = new SubTask("SubTask2", "Second subtask for test", epicTask);
+        subTask2 = new SubTask("SubTask2", "Second subtask for test", 3);
         manager.createSubTask(subTask2); // id:5
     }
 

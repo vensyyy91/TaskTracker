@@ -56,16 +56,16 @@ class HttpTaskServerTest {
         manager.createEpicTask(epicTask1);
         epicTask2 = new EpicTask("TestEpicTask2", "Second epicTask for test");
         manager.createEpicTask(epicTask2);
-        subTask1 = new SubTask("TestSubTask1", "First subTask for test", "25.06.2023 23:00", 30, epicTask1);
+        subTask1 = new SubTask("TestSubTask1", "First subTask for test", "25.06.2023 23:00", 30, 3);
         subTask1.setStatus(TaskStatus.DONE);
         manager.createSubTask(subTask1);
-        subTask2 = new SubTask("TestSubTask2", "Second subTask for test", "26.06.2023 21:00", 30, epicTask1);
+        subTask2 = new SubTask("TestSubTask2", "Second subTask for test", "26.06.2023 21:00", 30, 3);
         subTask2.setStatus(TaskStatus.DONE);
         manager.createSubTask(subTask2);
         gson = new GsonBuilder()
-                .registerTypeAdapter(Task.class, new TaskSerializer(manager))
+                .registerTypeAdapter(Task.class, new TaskSerializer())
                 .registerTypeAdapter(EpicTask.class, new EpicTaskSerializer())
-                .registerTypeAdapter(SubTask.class, new SubTaskSerializer(manager))
+                .registerTypeAdapter(SubTask.class, new SubTaskSerializer())
                 .create();
         server = new HttpTaskServer(manager);
         server.start();
@@ -255,7 +255,7 @@ class HttpTaskServerTest {
     @Test
     void createSubTask() throws IOException, InterruptedException {
         SubTask newSubTask = new SubTask("NewTestSubTask", "New SubTask for test",
-                "25.06.2023 22:00", 60, epicTask1);
+                "25.06.2023 22:00", 60, 3);
         String subTaskJson = gson.toJson(newSubTask);
         URI url = URI.create("http://localhost:8080/tasks/subtask/");
         HttpRequest request = HttpRequest.newBuilder()
@@ -327,7 +327,7 @@ class HttpTaskServerTest {
     @Test
     void updateSubTask() throws IOException, InterruptedException {
         SubTask updatedSubTask = new SubTask("UpdatedSubTask", "New updated SubTask for test",
-                "25.06.2023 23:30", 15, epicTask1);
+                "25.06.2023 23:30", 15, 3);
         updatedSubTask.setId(5);
         updatedSubTask.setStatus(TaskStatus.IN_PROGRESS);
         String subTaskJson = gson.toJson(updatedSubTask);

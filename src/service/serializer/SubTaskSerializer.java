@@ -1,11 +1,9 @@
 package service.serializer;
 
 import com.google.gson.*;
-import model.EpicTask;
 import model.SubTask;
 import model.TaskStatus;
 import model.TaskType;
-import service.TaskManager;
 
 import java.lang.reflect.Type;
 import java.time.Duration;
@@ -14,11 +12,6 @@ import java.time.format.DateTimeFormatter;
 
 public class SubTaskSerializer implements JsonSerializer<SubTask>, JsonDeserializer<SubTask> {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
-    private final TaskManager manager;
-
-    public SubTaskSerializer(TaskManager manager) {
-        this.manager = manager;
-    }
 
     @Override
     public JsonElement serialize(SubTask subTask, Type type, JsonSerializationContext jsonSerializationContext) {
@@ -42,11 +35,7 @@ public class SubTaskSerializer implements JsonSerializer<SubTask>, JsonDeseriali
         String name = jsonObject.get("name").getAsString();
         String description = jsonObject.get("description").getAsString();
         int masterTaskId = jsonObject.get("masterTaskId").getAsInt();
-        EpicTask masterTask = manager.getEpicTaskList().stream()
-                .filter(epic -> epic.getId() == masterTaskId)
-                .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
-        SubTask subTask = new SubTask(name, description, masterTask);
+        SubTask subTask = new SubTask(name, description, masterTaskId);
         if (jsonObject.has("id")) {
             subTask.setId(jsonObject.get("id").getAsInt());
         }

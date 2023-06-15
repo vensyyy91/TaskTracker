@@ -2,33 +2,14 @@ package service;
 
 import model.*;
 import java.util.List;
-import java.util.Map;
 
 /** Интерфейс для объектов-менеджеров, содержит список методов для управления задачами */
 public interface TaskManager {
     /**
-     * Метод-геттер для получения мапы с задачами
-     * @return возвращает мапу с задачами
+     * Метод-геттер для получения последнего присвоенного менеджером идентификатора
+     * @return возвращает индентификатор
      */
-    Map<Integer, Task> getTasksMap();
-
-    /**
-     * Метод-геттер для получения мапы с эпиками
-     * @return возвращает мапу с эпиками
-     */
-    Map<Integer, EpicTask> getEpicTasksMap();
-
-    /**
-     * Метод-геттер для получения мапы с подзадачами
-     * @return возвращает мапу с подзадачами
-     */
-    Map<Integer, SubTask> getSubTasksMap();
-
-    /**
-     * Метод-геттер для получения менеджера истории
-     * @return объект класса InMemoryHistoryManager
-     */
-    HistoryManager getHistoryManager();
+    int getId();
 
     /**
      * Метод получения списка задач
